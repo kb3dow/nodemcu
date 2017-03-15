@@ -67,3 +67,8 @@ rm master.zip
 echo Cloning original Arduino codebase as reference
 cd $NMCU_HOME
 git clone https://github.com/esp8266/Arduino.git
+
+#git clone nodemcu firmware for reference
+echo Cloning nodemcu firmware for reference
+cd $NMCU_HOME
+git clone https://github.com/nodemcu/nodemcu-firmware.git
