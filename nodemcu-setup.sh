@@ -17,16 +17,18 @@ cd esp-open-sdk
 make STANDALONE=y
 
 #Set  env variables
+echo Creating $NMCU_HOME/sourceThis which needs to be sourced before using node-mcu tools
+
 export ESP_HOME=$NMCU_HOME/esp-open-sdk
+echo export ESP_HOME=$ESP_HOME > $NMCU_HOME/sourceThis
+
 export SMING_HOME=$NMCU_HOME/Sming/Sming
-export PATH=$NMCU_HOME/esp-open-sdk/xtensa-lx106-elf/bin:$PATH
+echo export SMING_HOME=$SMING_HOME >> $NMCU_HOME/sourceThis
+
+export PATH=$PATH:$NMCU_HOME/esp-open-sdk/xtensa-lx106-elf/bin
+# PATH is put in sourceThis later in this file
+
 alias xgcc="xtensa-lx106-elf-gcc"
-
-
-echo Creating $NMCU_HOME/sourceThis which needs to be source before using node-mcu tools
-echo export ESP_HOME=$NMCU_HOME/esp-open-sdk > $NMCU_HOME/sourceThis
-echo export SMING_HOME=$NMCU_HOME/Sming/Sming >> $NMCU_HOME/sourceThis
-echo export PATH=$NMCU_HOME/esp-open-sdk/xtensa-lx106-elf/bin:$PATH >> $NMCU_HOME/sourceThis
 echo alias xgcc="xtensa-lx106-elf-gcc" >> $NMCU_HOME/sourceThis
 
 #Get and build Sming Core
@@ -44,10 +46,7 @@ cd $ESP_HOME
 git clone https://github.com/raburton/esptool2.git
 cd esptool2
 make
-#echo Finding and change the $NMCU_HOME/Sming/Sming/Makefile-project.mk to point to correct esptool2
-#sed --regexp-extended --in-place=.bak "s:^ESPTOOL2 \?\= .*:ESPTOOL2 \?\= $NMCU_HOME/esptool2/esptool2:" $NMCU_HOME/Sming/Sming/Makefile-project.mk
 export PATH=$PATH:$ESP_HOME/esptool2/
-echo export PATH=$PATH:$ESP_HOME/esptool2 >> $NMCU_HOME/sourceThis
 
 #Build Spiffy (if required)
 echo Building Spiffy
@@ -72,3 +71,6 @@ git clone https://github.com/esp8266/Arduino.git
 echo Cloning nodemcu firmware for reference
 cd $NMCU_HOME
 git clone https://github.com/nodemcu/nodemcu-firmware.git
+
+# This is done at the end as $PATH changes more than once
+echo export PATH=$PATH >> $NMCU_HOME/sourceThis
