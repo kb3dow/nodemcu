@@ -12,7 +12,7 @@ for m in lua-bitlib luafilesystem md5 luaposix luasocket; do sudo luarocks insta
 echo Installing esp-open-sdk
 NMCU_HOME=$PWD
 cd $NMCU_HOME
-git clone https://github.com/pfalcon/esp-open-sdk.git
+git clone --recursive https://github.com/pfalcon/esp-open-sdk.git
 cd esp-open-sdk
 make STANDALONE=y
 
@@ -71,6 +71,16 @@ git clone https://github.com/esp8266/Arduino.git
 echo Cloning nodemcu firmware for reference
 cd $NMCU_HOME
 git clone https://github.com/nodemcu/nodemcu-firmware.git
+cd nodemcu-firmware
+cp  -R ../esp-open-sdk/lx106-hal/include/xtensa sdk-overrides/include
+# catch22, the sdk/iesp_iot... dir isnt there (yet) and compilation fails
+# till the 2 .a files are copied over. The dir tree is present only after the
+# 1st compilation attempt
+wget -O sdk/esp_iot_sdk_v2.0.0/lib/libhal.a https://github.com/esp8266/esp8266-wiki/raw/master/libs/libhal.a
+wget -O sdk/esp_iot_sdk_v2.0.0/lib/libc.a https://github.com/esp8266/esp8266-wiki/raw/master/libs/libc.a
+# make
+echo NodeMCU firmware built. It can be flashed by doing
+echo "../tools/esptool.py --port /dev/ttyUSB0 write_flash 0x00000 ../bin/0x00000.bin 0x10000 ../bin/0x10000.bin"
 
 # This is done at the end as $PATH changes more than once
 echo export PATH=$PATH >> $NMCU_HOME/sourceThis
